@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}基因反向查询 — miRNA 综合数据库{% endblock %}
+{% block content %}
+
+<h4 class="page-title mb-3">
+    <i class="bi bi-arrow-left-right" style="color: #3498db;"></i>
+    基因反向查询
+</h4>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <p style="color: #7f8c8d; font-size: 0.9em;">
+            输入一个目标基因名（如 <code>CYP7A1</code>、<code>TP53</code>），
+            查询所有靶向该基因的 miRNA 及其详细信息。
+        </p>
+        <form method="POST" action="{{ url_for('reverse_search') }}">
+            <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-gene"></i></span>
+                <input type="text" name="gene" class="form-control" placeholder="请输入基因名，如 CYP7A1" value="{{ gene }}" required>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-search"></i> 查询
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if results is not none %}
+{% if results %}
+<div class="d-flex justify-content-between align-items-center mb-2">
+    <h5 class="mb-0" style="color: #2c3e50;">
+        <i class="bi bi-collection" style="color: #27ae60;"></i>
+        靶向 <code>{{ gene }}</code> 的 miRNA（共 {{ results|length }} 条记录）
+    </h5>
+</div>
+<div class="table-responsive">
+    <table class="table table-hover result-table">
+        <thead>
+            <tr>
+                <th>miRNA ID</th>
+                <th>物种</th>
+                <th>靶基因</th>
+                <th>互作类型</th>
+                <th>结合亲和力</th>
+                <th>种子序列</th>
+                <th>实验证据</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in results %}
+            <tr>
+                <td>
+                    <a href="{{ url_for('detail', mirna_id=r['mirna_id']) }}" class="mirna-link">
+                        {{ r['mirna_id'] }}
+                    </a>
+                </td>
+                <td><span class="species-tag">{{ r['species'] }}</span></td>
+                <td style="font-weight: 600; font-family: 'Courier New', monospace;">{{ r['target_gene'] }}</td>
+                <td><span class="badge bg-primary bg-opacity-10 text-primary">{{ r['interaction_type'] }}</span></td>
+                <td>{{ r['binding_affinity'] or '-' }}</td>
+                <td style="font-family: 'Courier New', monospace; color: #e74c3c; font-weight: 600;">{{ r['seed_sequence'] or '-' }}</td>
+                <td style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ r['experimental_evidence'] or '-' }}</td>
+                <td>
+                    <a href="{{ url_for('detail', mirna_id=r['mirna_id']) }}" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-eye"></i> 详情
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="card">
+    <div class="card-body text-center py-4">
+        <i class="bi bi-search" style="font-size: 2.5rem; color: #bdc3c7;"></i>
+        <h5 class="mt-2" style="color: #7f8c8d;">未找到结果</h5>
+        <p style="color: #95a5a6;">数据库中未收录靶向 <code>{{ gene }}</code> 的 miRNA，请尝试其他基因名</p>
+    </div>
+</div>
+{% endif %}
+{% endif %}
+
+{% endblock %}

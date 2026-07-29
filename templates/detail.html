@@ -1,0 +1,263 @@
+{% extends "base.html" %}
+{% block title %}{{ data.core.mirna_id }} — miRNA 详情{% endblock %}
+{% block content %}
+
+<!-- Detail Header -->
+<div class="detail-header">
+    <div class="d-flex justify-content-between align-items-center flex-wrap">
+        <div>
+            <h3 class="detail-title">{{ data.core.mirna_id }}</h3>
+            <p class="detail-species mb-0">
+                <i class="bi bi-tag-fill" style="color: #3498db;"></i>
+                {{ data.core.species }}
+                {% if data.core.is_dicer_dependent %}
+                <span class="badge bg-success bg-opacity-10 text-success ms-2">Dicer 依赖</span>
+                {% else %}
+                <span class="badge bg-warning bg-opacity-10 text-warning ms-2">非 Dicer 依赖</span>
+                {% endif %}
+            </p>
+        </div>
+        <a href="javascript:history.back()" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left"></i> 返回
+        </a>
+    </div>
+</div>
+
+<!-- Tabs -->
+<ul class="nav nav-tabs detail-tabs mt-3" id="detailTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="tab-basic" data-bs-toggle="tab" data-bs-target="#content-basic" type="button" role="tab">
+            <i class="bi bi-info-circle"></i> 基本信息
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="tab-expression" data-bs-toggle="tab" data-bs-target="#content-expression" type="button" role="tab">
+            <i class="bi bi-graph-up"></i> 表达谱与组织偏向性
+            {% if data.expression %}<span class="badge bg-secondary ms-1">{{ data.expression|length }}</span>{% endif %}
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="tab-functional" data-bs-toggle="tab" data-bs-target="#content-functional" type="button" role="tab">
+            <i class="bi bi-gear"></i> 功能与偏向
+            {% if data.functional %}<span class="badge bg-secondary ms-1">{{ data.functional|length }}</span>{% endif %}
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="tab-interactions" data-bs-toggle="tab" data-bs-target="#content-interactions" type="button" role="tab">
+            <i class="bi bi-diagram-3"></i> 靶基因互作网络
+            {% if data.interactions %}<span class="badge bg-secondary ms-1">{{ data.interactions|length }}</span>{% endif %}
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="tab-engineering" data-bs-toggle="tab" data-bs-target="#content-engineering" type="button" role="tab">
+            <i class="bi bi-tools"></i> 工程优化建议
+            {% if data.engineering %}<span class="badge bg-secondary ms-1">{{ data.engineering|length }}</span>{% endif %}
+        </button>
+    </li>
+</ul>
+
+<div class="tab-content mt-3" id="detailTabContent">
+
+    <!-- Tab 1: Basic Info -->
+    <div class="tab-pane fade show active" id="content-basic" role="tabpanel">
+        <div class="card">
+            <div class="card-body">
+                <table class="table detail-table mb-0">
+                    <tbody>
+                        <tr>
+                            <td style="width: 150px; font-weight: 600; color: #34495e;">miRNA ID</td>
+                            <td style="font-family: 'Courier New', monospace;">{{ data.core.mirna_id }}</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 600; color: #34495e;">物种</td>
+                            <td>{{ data.core.species }}</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 600; color: #34495e;">成熟序列</td>
+                            <td style="word-break: break-all; font-family: 'Courier New', monospace; font-size: 0.85em;">
+                                {{ data.core.mature_sequence or '-' }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 600; color: #34495e;">种子序列</td>
+                            <td style="font-family: 'Courier New', monospace; font-weight: 600; color: #e74c3c; font-size: 1.05em;">
+                                {{ data.core.seed_sequence or '-' }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 600; color: #34495e;">Dicer 依赖</td>
+                            <td>
+                                {% if data.core.is_dicer_dependent %}
+                                <span class="badge bg-success">是</span>
+                                {% else %}
+                                <span class="badge bg-warning">否</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab 2: Expression & Bias -->
+    <div class="tab-pane fade" id="content-expression" role="tabpanel">
+        {% if data.expression %}
+        <div class="card">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table detail-table mb-0">
+                        <thead>
+                            <tr>
+                                <th>上下文类型</th>
+                                <th>上下文名称</th>
+                                <th>表达值</th>
+                                <th>单位</th>
+                                <th>组织特异性指数</th>
+                                <th>数据来源</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for e in data.expression %}
+                            <tr>
+                                <td><span class="badge bg-info bg-opacity-10 text-info">{{ e['context_type'] }}</span></td>
+                                <td>{{ e['context_name'] }}</td>
+                                <td style="font-weight: 600;">{{ e['expression_value'] }}</td>
+                                <td>{{ e['expression_unit'] }}</td>
+                                <td>{{ e['tissue_specificity_index'] or '-' }}</td>
+                                <td><span class="data-source-tag">{{ e['data_source'] }}</span></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="card">
+            <div class="card-body text-center py-4">
+                <i class="bi bi-database-slash" style="font-size: 2rem; color: #bdc3c7;"></i>
+                <p class="mt-2 mb-0" style="color: #95a5a6;">暂无表达谱数据</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Tab 3: Functional Bias -->
+    <div class="tab-pane fade" id="content-functional" role="tabpanel">
+        {% if data.functional %}
+        <div class="card">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table detail-table mb-0">
+                        <thead>
+                            <tr>
+                                <th>类别</th>
+                                <th>名称</th>
+                                <th>描述</th>
+                                <th>上下文警告</th>
+                                <th>数据来源</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for f in data.functional %}
+                            <tr>
+                                <td><span class="badge bg-primary bg-opacity-10 text-primary">{{ f['bias_category'] }}</span></td>
+                                <td style="font-weight: 600;">{{ f['bias_name'] }}</td>
+                                <td>{{ f['bias_description'] or '-' }}</td>
+                                <td>
+                                    {% if f['context_warning'] %}
+                                    <span class="warning-text"><i class="bi bi-exclamation-triangle"></i> {{ f['context_warning'] }}</span>
+                                    {% else %}-{% endif %}
+                                </td>
+                                <td><span class="data-source-tag">{{ f['data_source'] }}</span></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="card">
+            <div class="card-body text-center py-4">
+                <i class="bi bi-database-slash" style="font-size: 2rem; color: #bdc3c7;"></i>
+                <p class="mt-2 mb-0" style="color: #95a5a6;">暂无功能偏向数据</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Tab 4: Target Interactions -->
+    <div class="tab-pane fade" id="content-interactions" role="tabpanel">
+        {% if data.interactions %}
+        <div class="card">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table detail-table mb-0">
+                        <thead>
+                            <tr>
+                                <th>靶基因</th>
+                                <th>互作类型</th>
+                                <th>结合亲和力</th>
+                                <th>实验证据</th>
+                                <th>数据来源</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for i in data.interactions %}
+                            <tr>
+                                <td style="font-weight: 600; font-family: 'Courier New', monospace;">{{ i['target_gene'] }}</td>
+                                <td><span class="badge bg-primary bg-opacity-10 text-primary">{{ i['interaction_type'] }}</span></td>
+                                <td>{{ i['binding_affinity'] or '-' }}</td>
+                                <td>{{ i['experimental_evidence'] or '-' }}</td>
+                                <td><span class="data-source-tag">{{ i['data_source'] }}</span></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="card">
+            <div class="card-body text-center py-4">
+                <i class="bi bi-database-slash" style="font-size: 2rem; color: #bdc3c7;"></i>
+                <p class="mt-2 mb-0" style="color: #95a5a6;">暂无靶基因互作数据</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Tab 5: Engineering Optimization -->
+    <div class="tab-pane fade" id="content-engineering" role="tabpanel">
+        {% if data.engineering %}
+        {% for opt in data.engineering %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <h6 class="card-subtitle" style="color: #2c3e50; font-weight: 600;">
+                        <span class="badge bg-info bg-opacity-10 text-info me-2">{{ opt['opt_type'] }}</span>
+                        {{ opt['target_cell_type'] or '通用' }}
+                    </h6>
+                </div>
+                <p><strong>应用场景：</strong>{{ opt['application_scenario'] or '-' }}</p>
+                <p><strong>策略详情：</strong></p>
+                <pre style="background: #f8f9fa; border-radius: 4px; padding: 12px; font-size: 0.85em; max-height: 300px; overflow-y: auto;">{{ opt['strategy_details'] | tojson(indent=2) if opt['strategy_details'] else '-' }}</pre>
+                <p class="mb-0"><strong>数据来源：</strong><span class="data-source-tag">{{ opt['data_source'] }}</span></p>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="card">
+            <div class="card-body text-center py-4">
+                <i class="bi bi-database-slash" style="font-size: 2rem; color: #bdc3c7;"></i>
+                <p class="mt-2 mb-0" style="color: #95a5a6;">暂无工程优化数据</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+
+{% endblock %}

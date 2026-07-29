@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% block title %}首页 — miRNA 综合数据库{% endblock %}
+{% block content %}
+
+<!-- Hero Search Section -->
+<div class="search-hero">
+    <div class="search-hero-icon">
+        <i class="bi bi-dna"></i>
+    </div>
+    <h1 class="search-hero-title">miRNA <span style="color: #3498db;">综合数据库</span></h1>
+    <p class="search-hero-desc">搜索 miRNA 核心信息、表达谱、功能偏向、靶基因互作与工程优化数据</p>
+
+    <form action="{{ url_for('search') }}" method="GET" class="search-form">
+        <div class="search-box">
+            <select name="mode" class="search-mode-select">
+                <option value="contains">包含匹配</option>
+                <option value="exact">精确匹配</option>
+            </select>
+            <input type="text" name="q" class="search-input" placeholder="输入 miRNA ID，例如 hsa-miR-21-5p" required>
+            <button type="submit" class="search-btn">
+                <i class="bi bi-search"></i> 搜索
+            </button>
+        </div>
+    </form>
+
+    <!-- Quick Species Links -->
+    <div class="quick-links">
+        {% set common_species = ['Homo sapiens', 'Mus musculus', 'Drosophila melanogaster'] %}
+        {% for sp in common_species %}
+        <a href="{{ url_for('search') }}?q={{ sp.split()[-1] if sp.split()|length > 1 else sp }}&mode=contains" class="species-btn" title="{{ sp }}">
+            {% if 'Homo' in sp or 'human' in sp.lower() %}
+            <i class="bi bi-person"></i>
+            {% elif 'Mus' in sp or 'mouse' in sp.lower() %}
+            <i class="bi bi-mouse"></i>
+            {% else %}
+            <i class="bi bi-bug"></i>
+            {% endif %}
+            {{ sp.split('_')[0] if '_' in sp else sp.split()[0] }}
+        </a>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Stats Cards -->
+<div class="row g-3 mt-2">
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(52,152,219,0.12); color: #3498db;">
+                <i class="bi bi-collection"></i>
+            </div>
+            <div class="stat-info">
+                <div class="stat-number">{{ stats.mirna_total }}</div>
+                <div class="stat-label">miRNA 总数</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(39,174,96,0.12); color: #27ae60;">
+                <i class="bi bi bi-layers"></i>
+            </div>
+            <div class="stat-info">
+                <div class="stat-number">{{ stats.tissue_samples }}</div>
+                <div class="stat-label">组织 / 细胞样本数</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(155,89,182,0.12); color: #9b59b6;">
+                <i class="bi bi-globe2"></i>
+            </div>
+            <div class="stat-info">
+                <div class="stat-number">{{ stats.species_total }}</div>
+                <div class="stat-label">涵盖物种数</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Function Cards -->
+<div class="row g-3 mt-2">
+    <div class="col-md-6">
+        <div class="card function-card">
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-2">
+                    <div class="function-icon" style="color: #3498db;">
+                        <i class="bi bi-arrow-left-right fs-3"></i>
+                    </div>
+                    <h5 class="card-title ms-2 mb-0">基因反向查询</h5>
+                </div>
+                <p class="card-text" style="color: #7f8c8d; font-size: 0.85em;">
+                    输入目标基因名（如 CYP7A1），查找所有靶向该基因的 miRNA。
+                </p>
+                <a href="{{ url_for('reverse_search') }}" class="btn btn-outline-primary btn-sm">
+                    前往查询 <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card function-card">
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-2">
+                    <div class="function-icon" style="color: #27ae60;">
+                        <i class="bi bi-table fs-3"></i>
+                    </div>
+                    <h5 class="card-title ms-2 mb-0">浏览全部 miRNA</h5>
+                </div>
+                <p class="card-text" style="color: #7f8c8d; font-size: 0.85em;">
+                    浏览数据库中收录的全部 miRNA 记录及详细信息。
+                </p>
+                <a href="{{ url_for('search') }}?q=&mode=contains" class="btn btn-outline-success btn-sm">
+                    浏览全部 <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

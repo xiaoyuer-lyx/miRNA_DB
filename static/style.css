@@ -1,0 +1,534 @@
+/* ==========================================================================
+   miRNA 综合数据库 — 自定义样式
+   风格参考: huoyan.tech/codon
+   ========================================================================== */
+
+/* ── Variables ────────────────────────────────────────────────────────── */
+:root {
+    --primary: #3498db;
+    --primary-hover: #2980b9;
+    --primary-dark: #2c3e50;
+    --bg-color: #f5f7fa;
+    --card-bg: #ffffff;
+    --text-color: #333333;
+    --text-label: #34495e;
+    --border-color: #eeeeee;
+    --border-strong: #dddddd;
+    --success: #27ae60;
+    --danger: #e74c3c;
+    --warning: #f39c12;
+    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* ── Base ─────────────────────────────────────────────────────────────── */
+body {
+    font-family: var(--font-family);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-size: 0.85em;
+    line-height: 1.4;
+}
+
+a {
+    color: var(--primary);
+    text-decoration: none;
+}
+a:hover {
+    color: var(--primary-hover);
+}
+
+.container {
+    max-width: 1200px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.main-content {
+    min-height: 60vh;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+/* ── Cards ────────────────────────────────────────────────────────────── */
+.card {
+    background: var(--card-bg);
+    border-radius: 6px;
+    padding: 18px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+    border: 1px solid var(--border-color);
+}
+
+/* ── Buttons ──────────────────────────────────────────────────────────── */
+.btn-primary {
+    background: var(--primary);
+    color: #fff;
+    border-radius: 4px;
+    padding: 8px 18px;
+    border: none;
+}
+.btn-primary:hover {
+    background: var(--primary-hover);
+    color: #fff;
+}
+
+.btn-outline-primary {
+    color: var(--primary);
+    border-color: var(--primary);
+}
+.btn-outline-primary:hover {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+}
+
+.btn-secondary {
+    background: #95a5a6;
+    color: #fff;
+}
+.btn-success {
+    background: var(--success);
+    color: #fff;
+}
+.btn-danger {
+    background: var(--danger);
+    color: #fff;
+}
+
+.btn-outline-secondary {
+    color: #95a5a6;
+    border-color: #95a5a6;
+}
+.btn-outline-secondary:hover {
+    background: #95a5a6;
+    color: #fff;
+}
+
+.btn-outline-success {
+    color: var(--success);
+    border-color: var(--success);
+}
+.btn-outline-success:hover {
+    background: var(--success);
+    color: #fff;
+}
+
+/* ── Tables ───────────────────────────────────────────────────────────── */
+.table {
+    margin-bottom: 0;
+    color: var(--text-color);
+}
+.table thead th {
+    background: #f8f9fa;
+    color: var(--text-label);
+    border-bottom: 2px solid var(--border-color);
+    font-size: 0.85em;
+    font-weight: 600;
+    padding: 10px 12px;
+}
+.table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border-color);
+    vertical-align: middle;
+}
+.table tbody tr:hover {
+    background: #f8f9fa;
+}
+
+/* Result table specific */
+.result-table {
+    background: var(--card-bg);
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+}
+
+.detail-table {
+    border: none;
+}
+.detail-table th {
+    font-size: 0.9em;
+}
+
+/* ── Tags & Badges ────────────────────────────────────────────────────── */
+.mirna-link {
+    font-family: 'Courier New', monospace;
+    font-weight: 600;
+    color: var(--primary);
+}
+.mirna-link:hover {
+    color: var(--primary-hover);
+}
+
+.species-tag {
+    background: rgba(52, 152, 219, 0.08);
+    color: var(--primary-dark);
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    white-space: nowrap;
+}
+
+.data-source-tag {
+    background: #f0f0f0;
+    color: #7f8c8d;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 0.8em;
+}
+
+.warning-text {
+    color: var(--danger);
+    font-size: 0.85em;
+}
+
+/* ── Pagination ───────────────────────────────────────────────────────── */
+.page-link {
+    color: var(--primary);
+    border-color: var(--border-color);
+}
+.page-item.active .page-link {
+    background: var(--primary);
+    border-color: var(--primary);
+}
+.page-link:hover {
+    background: #f0f0f0;
+    color: var(--primary-hover);
+}
+
+/* ── Login / Register Pages ────────────────────────────────────────────── */
+
+.login-page {
+    background: url('images/login-background.png') no-repeat center center fixed;
+    background-size: cover;
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.login-card {
+    background: rgba(255, 255, 255, 0.97);
+    border-radius: 10px;
+    padding: 36px 32px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 8px 32px rgba(44, 62, 80, 0.2);
+}
+
+.login-logo {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 16px;
+    background: linear-gradient(135deg, #3498db, #2c3e50);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    color: #fff;
+}
+
+.login-title {
+    color: var(--primary-dark);
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.login-subtitle {
+    color: #95a5a6;
+    font-size: 0.9em;
+    margin-bottom: 0;
+}
+
+.login-card .form-label {
+    font-size: 0.85em;
+    font-weight: 500;
+    color: var(--text-label);
+}
+
+.login-card .input-group-text {
+    background: #f8f9fa;
+    border-color: var(--border-color);
+    color: #95a5a6;
+}
+
+.login-card .form-control {
+    border-color: var(--border-color);
+    font-size: 0.9em;
+}
+.login-card .form-control:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.15);
+}
+
+.register-link {
+    font-weight: 600;
+}
+
+/* ── Search Hero (Homepage) ────────────────────────────────────────────── */
+
+.search-hero {
+    text-align: center;
+    padding: 40px 0 30px;
+}
+
+.search-hero-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 16px;
+    background: linear-gradient(135deg, #3498db, #2c3e50);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.4rem;
+    color: #fff;
+}
+
+.search-hero-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin-bottom: 8px;
+}
+
+.search-hero-desc {
+    color: #95a5a6;
+    font-size: 0.95em;
+    margin-bottom: 24px;
+}
+
+.search-form {
+    max-width: 640px;
+    margin: 0 auto 24px;
+}
+
+.search-box {
+    display: flex;
+    background: var(--card-bg);
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    border: 1px solid var(--border-color);
+}
+
+.search-mode-select {
+    padding: 10px 14px;
+    border: none;
+    background: #f8f9fa;
+    color: var(--text-label);
+    font-size: 0.85em;
+    cursor: pointer;
+    outline: none;
+    border-right: 1px solid var(--border-color);
+}
+
+.search-input {
+    flex: 1;
+    padding: 12px 16px;
+    border: none;
+    outline: none;
+    font-size: 0.95em;
+    color: var(--text-color);
+}
+.search-input::placeholder {
+    color: #bdc3c7;
+}
+
+.search-btn {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    padding: 12px 24px;
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.search-btn:hover {
+    background: var(--primary-hover);
+}
+
+/* Quick species buttons */
+.quick-links {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.species-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--card-bg);
+    color: var(--primary-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 8px 18px;
+    font-size: 0.85em;
+    transition: all 0.2s;
+}
+.species-btn:hover {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+}
+
+/* ── Stats Cards ──────────────────────────────────────────────────────── */
+
+.stat-card {
+    background: var(--card-bg);
+    border-radius: 6px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-left: 4px solid var(--primary);
+}
+
+.stat-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+}
+
+.stat-number {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    line-height: 1.2;
+}
+
+.stat-label {
+    font-size: 0.85em;
+    color: #7f8c8d;
+}
+
+/* Function cards */
+.function-card {
+    border-left: 4px solid var(--primary);
+    padding: 20px;
+}
+.function-icon {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ── Detail Page ──────────────────────────────────────────────────────── */
+
+.detail-header {
+    background: var(--card-bg);
+    border-radius: 6px;
+    padding: 22px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+    border-left: 4px solid var(--primary);
+}
+
+.detail-title {
+    color: var(--primary-dark);
+    font-weight: 700;
+    font-family: 'Courier New', monospace;
+}
+
+.detail-species {
+    color: #7f8c8d;
+    font-size: 0.9em;
+}
+
+/* Tabs */
+.detail-tabs .nav-link {
+    color: var(--text-label);
+    border: none;
+    padding: 10px 16px;
+    font-size: 0.85em;
+    border-radius: 0;
+    border-bottom: 2px solid transparent;
+}
+.detail-tabs .nav-link:hover {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+}
+.detail-tabs .nav-link.active {
+    color: var(--primary);
+    background: transparent;
+    border-bottom-color: var(--primary);
+    font-weight: 600;
+}
+
+/* ── Search Summary ───────────────────────────────────────────────────── */
+
+.search-summary-card {
+    padding: 12px 18px;
+}
+
+.page-title {
+    font-weight: 700;
+    color: var(--primary-dark);
+    font-size: 1.3em;
+}
+
+/* ── Flash Messages ───────────────────────────────────────────────────── */
+
+.alert-success {
+    background: rgba(39, 174, 96, 0.08);
+    border-color: var(--success);
+    color: var(--success);
+}
+.alert-danger {
+    background: rgba(231, 76, 60, 0.08);
+    border-color: var(--danger);
+    color: var(--danger);
+}
+.alert-warning {
+    background: rgba(243, 156, 18, 0.08);
+    border-color: var(--warning);
+    color: var(--warning);
+}
+.alert-info {
+    background: rgba(52, 152, 219, 0.08);
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+/* ── Responsive ────────────────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+    .search-hero-title {
+        font-size: 1.4rem;
+    }
+    .search-box {
+        flex-direction: column;
+    }
+    .search-mode-select {
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+        width: 100%;
+    }
+    .stat-card {
+        flex-direction: column;
+        text-align: center;
+    }
+    .detail-tabs .nav-link {
+        font-size: 0.8em;
+        padding: 8px 10px;
+    }
+}
