@@ -47,58 +47,58 @@ def execute(sql, params=None):
 
 def search_mirna(keyword, mode="contains"):
     """
-    Search miRNA_Core_Info by miRNA_ID.
+    Search mirna_core_info by mirna_id.
     mode: 'exact' or 'contains'
     """
     if mode == "exact":
-        sql = "SELECT * FROM miRNA_Core_Info WHERE miRNA_ID = %s ORDER BY miRNA_ID"
+        sql = "SELECT * FROM mirna_core_info WHERE mirna_id = %s ORDER BY mirna_id"
         return query_dict(sql, (keyword,))
     else:
-        sql = "SELECT * FROM miRNA_Core_Info WHERE miRNA_ID ILIKE %s ORDER BY miRNA_ID"
+        sql = "SELECT * FROM mirna_core_info WHERE mirna_id ILIKE %s ORDER BY mirna_id"
         return query_dict(sql, (f"%{keyword}%",))
 
 
 def count_mirna_total():
     """Total number of miRNA records."""
-    row = query_one("SELECT COUNT(*) AS cnt FROM miRNA_Core_Info")
+    row = query_one("SELECT COUNT(*) AS cnt FROM mirna_core_info")
     return row["cnt"] if row else 0
 
 
 def count_tissue_samples():
     """Total distinct tissue/cell type samples."""
     row = query_one(
-        "SELECT COUNT(DISTINCT context_name) AS cnt FROM miRNA_Expression_Bias"
+        "SELECT COUNT(DISTINCT context_name) AS cnt FROM mirna_expression_bias"
     )
     return row["cnt"] if row else 0
 
 
 def count_species():
     """Total distinct species."""
-    row = query_one("SELECT COUNT(DISTINCT species) AS cnt FROM miRNA_Core_Info")
+    row = query_one("SELECT COUNT(DISTINCT species) AS cnt FROM mirna_core_info")
     return row["cnt"] if row else 0
 
 
 def get_mirna_detail(mirna_id):
     """Get full detail for one miRNA."""
     core = query_one(
-        "SELECT * FROM miRNA_Core_Info WHERE miRNA_ID = %s", (mirna_id,)
+        "SELECT * FROM mirna_core_info WHERE mirna_id = %s", (mirna_id,)
     )
     if not core:
         return None
     expression = query_dict(
-        "SELECT * FROM miRNA_Expression_Bias WHERE miRNA_ID = %s ORDER BY context_type, context_name",
+        "SELECT * FROM mirna_expression_bias WHERE mirna_id = %s ORDER BY context_type, context_name",
         (mirna_id,),
     )
     functional = query_dict(
-        "SELECT * FROM miRNA_Functional_Bias WHERE miRNA_ID = %s ORDER BY bias_category",
+        "SELECT * FROM mirna_functional_bias WHERE mirna_id = %s ORDER BY bias_category",
         (mirna_id,),
     )
     engineering = query_dict(
-        "SELECT * FROM miRNA_Engineering_Optimization WHERE miRNA_ID = %s ORDER BY opt_type",
+        "SELECT * FROM mirna_engineering_optimization WHERE mirna_id = %s ORDER BY opt_type",
         (mirna_id,),
     )
     interactions = query_dict(
-        "SELECT * FROM miRNA_Target_Interactions WHERE miRNA_ID = %s ORDER BY target_gene",
+        "SELECT * FROM mirna_target_interactions WHERE mirna_id = %s ORDER BY target_gene",
         (mirna_id,),
     )
     return {
@@ -116,10 +116,10 @@ def search_by_target_gene(gene_name):
     """
     sql = """
         SELECT i.*, c.species, c.mature_sequence, c.seed_sequence
-        FROM miRNA_Target_Interactions i
-        JOIN miRNA_Core_Info c ON i.miRNA_ID = c.miRNA_ID
+        FROM mirna_target_interactions i
+        JOIN mirna_core_info c ON i.mirna_id = c.mirna_id
         WHERE i.target_gene ILIKE %s
-        ORDER BY i.miRNA_ID
+        ORDER BY i.mirna_id
     """
     return query_dict(sql, (f"%{gene_name}%",))
 
@@ -127,7 +127,7 @@ def search_by_target_gene(gene_name):
 def get_species_list():
     """Get list of distinct species for quick-entry buttons."""
     rows = query_dict(
-        "SELECT DISTINCT species FROM miRNA_Core_Info ORDER BY species"
+        "SELECT DISTINCT species FROM mirna_core_info ORDER BY species"
     )
     return [r["species"] for r in rows]
 
