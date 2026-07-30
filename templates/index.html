@@ -27,7 +27,8 @@
     <div class="quick-links">
         {% set common_species = ['Homo sapiens', 'Mus musculus', 'Drosophila melanogaster'] %}
         {% for sp in common_species %}
-        <a href="{{ url_for('search') }}?q={{ sp.split()[-1] if sp.split()|length > 1 else sp }}&mode=contains" class="species-btn" title="{{ sp }}">
+        {% set short_name = sp.split()[0] %}
+        <a href="{{ url_for('search') }}?q={{ short_name }}&mode=contains" class="species-btn" title="{{ sp }}">
             {% if 'Homo' in sp or 'human' in sp.lower() %}
             <i class="bi bi-person"></i>
             {% elif 'Mus' in sp or 'mouse' in sp.lower() %}
