@@ -334,15 +334,16 @@ a:hover {
 }
 
 .search-species-select {
-    padding: 10px 14px;
+    padding: 10px 8px;
     border: none;
     background: #f8f9fa;
     color: var(--text-label);
-    font-size: 0.85em;
+    font-size: 0.82em;
     cursor: pointer;
     outline: none;
     border-right: 1px solid var(--border-color);
-    min-width: 110px;
+    max-width: 110px;
+    text-overflow: ellipsis;
 }
 
 .search-input {
@@ -534,6 +535,11 @@ a:hover {
         border-right: none;
         border-bottom: 1px solid var(--border-color);
         width: 100%;
+    }
+    .search-species-select {
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+        max-width: 100%;
     }
     .stat-card {
         flex-direction: column;

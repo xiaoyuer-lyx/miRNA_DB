@@ -12,15 +12,15 @@
 
     <form action="{{ url_for('search') }}" method="GET" class="search-form">
         <div class="search-box">
+            <select name="mode" class="search-mode-select">
+                <option value="contains">包含匹配</option>
+                <option value="exact">精确匹配</option>
+            </select>
             <select name="species" class="search-species-select" title="选择物种">
                 <option value="all">🌐 所有物种</option>
                 <option value="Homo sapiens">🧑 Homo sapiens</option>
                 <option value="Mus musculus">🐭 Mus musculus</option>
                 <option value="Drosophila melanogaster">🪰 Drosophila melanogaster</option>
-            </select>
-            <select name="mode" class="search-mode-select">
-                <option value="contains">包含匹配</option>
-                <option value="exact">精确匹配</option>
             </select>
             <input type="text" name="q" class="search-input" placeholder="输入 miRNA ID，例如 hsa-miR-21-5p">
             <button type="submit" class="search-btn">

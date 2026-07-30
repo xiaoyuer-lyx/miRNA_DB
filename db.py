@@ -50,9 +50,10 @@ def search_mirna(keyword, mode="contains", species=None):
     Search mirna_core_info by mirna_id (exact) or mirna_id/species (contains).
     If species is provided, filter by that species.
     mode: 'exact' or 'contains'
+    Returns results with display_id = COALESCE(mirbase_id, mirna_id).
     """
     if mode == "exact":
-        sql = "SELECT * FROM mirna_core_info WHERE mirna_id = %s"
+        sql = "SELECT *, COALESCE(mirbase_id, mirna_id) AS display_id FROM mirna_core_info WHERE mirna_id = %s"
         params = [keyword]
         if species and species != "all":
             sql += " AND species = %s"
@@ -60,7 +61,7 @@ def search_mirna(keyword, mode="contains", species=None):
         sql += " ORDER BY mirna_id"
         return query_dict(sql, params)
     else:
-        sql = "SELECT * FROM mirna_core_info WHERE (mirna_id ILIKE %s OR species ILIKE %s)"
+        sql = "SELECT *, COALESCE(mirbase_id, mirna_id) AS display_id FROM mirna_core_info WHERE (mirna_id ILIKE %s OR species ILIKE %s)"
         like = f"%{keyword}%"
         params = [like, like]
         if species and species != "all":
@@ -93,24 +94,24 @@ def count_species():
 def get_mirna_detail(mirna_id):
     """Get full detail for one miRNA."""
     core = query_one(
-        "SELECT * FROM mirna_core_info WHERE mirna_id = %s", (mirna_id,)
+        "SELECT *, COALESCE(mirbase_id, mirna_id) AS display_id FROM mirna_core_info WHERE mirna_id = %s", (mirna_id,)
     )
     if not core:
         return None
     expression = query_dict(
-        "SELECT * FROM mirna_expression_bias WHERE mirna_id = %s ORDER BY context_type, context_name",
+        "SELECT *, COALESCE(mirbase_id, mirna_id) AS display_id FROM mirna_expression_bias WHERE mirna_id = %s ORDER BY context_type, context_name",
         (mirna_id,),
     )
     functional = query_dict(
-        "SELECT * FROM mirna_functional_bias WHERE mirna_id = %s ORDER BY bias_category",
+        "SELECT *, COALESCE(mirbase_id, mirna_id) AS display_id FROM mirna_functional_bias WHERE mirna_id = %s ORDER BY bias_category",
         (mirna_id,),
     )
     engineering = query_dict(
-        "SELECT * FROM mirna_engineering_optimization WHERE mirna_id = %s ORDER BY opt_type",
+        "SELECT *, COALESCE(mirbase_id, mirna_id) AS display_id FROM mirna_engineering_optimization WHERE mirna_id = %s ORDER BY opt_type",
         (mirna_id,),
     )
     interactions = query_dict(
-        "SELECT * FROM mirna_target_interactions WHERE mirna_id = %s ORDER BY target_gene",
+        "SELECT *, COALESCE(mirbase_id, mirna_id) AS display_id FROM mirna_target_interactions WHERE mirna_id = %s ORDER BY target_gene",
         (mirna_id,),
     )
     return {
@@ -127,7 +128,9 @@ def search_by_target_gene(gene_name):
     Reverse search: given a target gene name, find all miRNA that target it.
     """
     sql = """
-        SELECT i.*, c.species, c.mature_sequence, c.seed_sequence
+        SELECT i.*, c.species, c.mature_sequence, c.seed_sequence,
+               c.mirbase_id, c.mirgenedb_id,
+               COALESCE(c.mirbase_id, c.mirna_id) AS display_id
         FROM mirna_target_interactions i
         JOIN mirna_core_info c ON i.mirna_id = c.mirna_id
         WHERE i.target_gene ILIKE %s

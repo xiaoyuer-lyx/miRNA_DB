@@ -52,7 +52,10 @@
             <tr>
                 <td>
                     <a href="{{ url_for('detail', mirna_id=r['mirna_id']) }}" class="mirna-link">
-                        {{ r['mirna_id'] }}
+                        {{ r.get('display_id', r['mirna_id']) }}
+                        {% if r.get('mirgenedb_id') and r['mirgenedb_id'] != r.get('display_id', r['mirna_id']) %}
+                        <small style="color: #95a5a6; font-size: 0.75em;">({{ r['mirgenedb_id'] }})</small>
+                        {% endif %}
                     </a>
                 </td>
                 <td><span class="species-tag">{{ r['species'] }}</span></td>
