@@ -72,17 +72,17 @@
                     <tbody>
                         <tr>
                             <td style="width: 150px; font-weight: 600; color: #34495e;">miRNA ID</td>
-                            <td style="font-family: 'Courier New', monospace; font-weight: 600;">{{ data.core.display_id }}</td>
+                            <td style="font-weight: 600; font-family: 'Courier New', monospace;">{{ data.core.display_id }}</td>
                         </tr>
                         {% if data.core.mirgenedb_id and data.core.mirgenedb_id != data.core.display_id %}
                         <tr>
                             <td style="font-weight: 600; color: #34495e;">MirGeneDB ID</td>
-                            <td style="font-family: 'Courier New', monospace; color: #7f8c8d;">{{ data.core.mirgenedb_id }}</td>
+                            <td style="font-weight: 600; font-family: 'Courier New', monospace; color: #7f8c8d;">{{ data.core.mirgenedb_id }}</td>
                         </tr>
                         {% endif %}
                         <tr>
                             <td style="font-weight: 600; color: #34495e;">物种</td>
-                            <td>{{ data.core.species }}</td>
+                            <td style="font-weight: 600;">{{ data.core.species }}</td>
                         </tr>
                         <tr>
                             <td style="font-weight: 600; color: #34495e;">成熟序列</td>
