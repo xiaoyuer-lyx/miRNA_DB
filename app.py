@@ -53,6 +53,111 @@ login_manager.login_message = "请先登录后再访问此页面。"
 login_manager.login_message_category = "warning"
 
 
+# ── Jinja2 filter: 策略详情 JSON → 中文描述 ─────────────────────────
+
+
+def format_strategy_details(details, mirna_id=""):
+    """将 strategy_details JSON 渲染为可读的中文描述文本。"""
+    if not details:
+        return "无"
+    if not isinstance(details, dict):
+        return str(details)
+
+    opt_type = details.get("opt_type", "")
+
+    # --- Detargeting（去靶向策略） ---
+    if "copy_number" in details:
+        copy_num = details.get("copy_number", "")
+        efficiency = details.get("efficiency", "")
+        combination = details.get("combination")
+
+        lines = ["📌 去靶向策略（Detargeting）"]
+        lines.append("")
+        lines.append(
+            f"在目标 mRNA 的 3' UTR 区域插入 {copy_num} 个"
+            f" 与该 miRNA 完全互补的靶点（miRT），"
+        )
+
+        if efficiency == ">95%":
+            lines.append(
+                "可将该 mRNA 在特定细胞中的表达量 彻底清除（降低 >95%），"
+                "几乎检测不到残留表达。"
+            )
+        elif efficiency and "fold" in efficiency:
+            lines.append(
+                f"可将该 mRNA 在特定细胞中的表达量 降低约 {efficiency}"
+                "（即残留表达约为原来的 1/10）。"
+            )
+        else:
+            lines.append(f"可实现 {efficiency} 的表达抑制效果。")
+
+        if combination:
+            lines.append("")
+            lines.append(f"联合策略：与 {combination} 协同作用。")
+
+        return "\n".join(lines)
+
+    # --- Co_Delivery（共递送策略） ---
+    if "delivery_tech" in details and "inhibitor_type" in details:
+        tech = details["delivery_tech"]
+        inhibitor = details["inhibitor_type"]
+
+        lines = ["📌 共递送策略（Co-Delivery）"]
+        lines.append("")
+
+        # 根据 delivery_tech 翻译
+        tech_cn_map = {
+            "Trimannose conjugation": "三甘露糖（Trimannose）偶联技术",
+            "LNP co-delivery": "脂质纳米颗粒（LNP）共递送技术",
+        }
+        tech_cn = tech_cn_map.get(tech, tech)
+
+        # 根据 inhibitor_type 翻译
+        inhibitor_desc = (
+            f"{inhibitor}（一种与 miRNA 完全互补的人工合成 RNA 抑制剂）"
+        )
+
+        lines.append(
+            f"将 {inhibitor_desc} 通过 {tech_cn} 进行化学修饰，"
+        )
+        lines.append(
+            "利用靶细胞表面特异性识别该修饰的受体，"
+            "实现 精准靶向递送至目标细胞，"
+            "从而在细胞内中和 miRNA 的活性，减轻相关病理反应。"
+        )
+
+        return "\n".join(lines)
+
+    # --- Codon_Escape（密码子逃逸策略） ---
+    if "wild_codon" in details and "mutant_codon" in details:
+        wt = details["wild_codon"]
+        mt = details["mutant_codon"]
+        aa = details.get("amino_acid", "")
+
+        lines = ["📌 密码子逃逸策略（Codon Escape）"]
+        lines.append("")
+        lines.append(
+            f"将野生型密码子 {wt}（编码 {aa}）"
+            f" 突变为 {mt}，"
+        )
+        lines.append(
+            "在不改变氨基酸序列的前提下，"
+            "破坏 miRNA 与 mRNA 的互补结合位点，"
+            "从而规避 miRNA 对该 mRNA 的抑制作用。"
+        )
+
+        return "\n".join(lines)
+
+    # --- 兜底：格式化 JSON key-value ---
+    lines = ["📌 策略详情"]
+    for k, v in details.items():
+        lines.append(f"  • {k}: {v}")
+    return "\n".join(lines)
+
+
+app.jinja_env.filters["fmt_strategy"] = format_strategy_details
+
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.get(user_id)
