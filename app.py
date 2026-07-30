@@ -57,13 +57,13 @@ login_manager.login_message_category = "warning"
 
 
 def format_strategy_details(details, mirna_id=""):
-    """将 strategy_details JSON 渲染为可读的中文描述文本。"""
+    """将 strategy_details JSON 渲染为可读的中文描述（返回 HTML）。"""
     if not details:
         return "无"
     if not isinstance(details, dict):
         return str(details)
 
-    opt_type = details.get("opt_type", "")
+    parts = []
 
     # --- Detargeting（去靶向策略） ---
     if "copy_number" in details:
@@ -71,62 +71,57 @@ def format_strategy_details(details, mirna_id=""):
         efficiency = details.get("efficiency", "")
         combination = details.get("combination")
 
-        lines = ["📌 去靶向策略（Detargeting）"]
-        lines.append("")
-        lines.append(
+        parts.append('<div style="margin-bottom: 4px;"><strong>📌 去靶向策略（Detargeting）</strong></div>')
+
+        text = (
             f"在目标 mRNA 的 3' UTR 区域插入 {copy_num} 个"
-            f" 与该 miRNA 完全互补的靶点（miRT），"
+            f" 与该 miRNA 完全互补的靶点（miRT）。"
         )
 
         if efficiency == ">95%":
-            lines.append(
-                "可将该 mRNA 在特定细胞中的表达量 彻底清除（降低 >95%），"
+            text += (
+                " 可将该 mRNA 在特定细胞中的表达量"
+                " <strong>彻底清除（降低 &gt;95%）</strong>，"
                 "几乎检测不到残留表达。"
             )
         elif efficiency and "fold" in efficiency:
-            lines.append(
-                f"可将该 mRNA 在特定细胞中的表达量 降低约 {efficiency}"
+            text += (
+                f" 可将该 mRNA 在特定细胞中的表达量"
+                f" <strong>降低约 {efficiency}</strong>"
                 "（即残留表达约为原来的 1/10）。"
             )
         else:
-            lines.append(f"可实现 {efficiency} 的表达抑制效果。")
+            text += f" 可实现 {efficiency} 的表达抑制效果。"
+
+        parts.append(f'<div>{text}</div>')
 
         if combination:
-            lines.append("")
-            lines.append(f"联合策略：与 {combination} 协同作用。")
+            parts.append(f'<div style="margin-top: 4px;">联合策略：与 {combination} 协同作用。</div>')
 
-        return "\n".join(lines)
+        return "".join(parts)
 
     # --- Co_Delivery（共递送策略） ---
     if "delivery_tech" in details and "inhibitor_type" in details:
         tech = details["delivery_tech"]
         inhibitor = details["inhibitor_type"]
 
-        lines = ["📌 共递送策略（Co-Delivery）"]
-        lines.append("")
+        parts.append('<div style="margin-bottom: 4px;"><strong>📌 共递送策略（Co-Delivery）</strong></div>')
 
-        # 根据 delivery_tech 翻译
         tech_cn_map = {
             "Trimannose conjugation": "三甘露糖（Trimannose）偶联技术",
             "LNP co-delivery": "脂质纳米颗粒（LNP）共递送技术",
         }
         tech_cn = tech_cn_map.get(tech, tech)
 
-        # 根据 inhibitor_type 翻译
-        inhibitor_desc = (
-            f"{inhibitor}（一种与 miRNA 完全互补的人工合成 RNA 抑制剂）"
+        text = (
+            f"将 {inhibitor}（一种与 miRNA 完全互补的"
+            f"人工合成 RNA 抑制剂）通过 <strong>{tech_cn}</strong>"
+            f" 进行化学修饰，利用靶细胞表面特异性识别该修饰的受体，"
+            f"实现 <strong>精准靶向递送至目标细胞</strong>，"
+            f"从而在细胞内中和 miRNA 的活性，减轻相关病理反应。"
         )
-
-        lines.append(
-            f"将 {inhibitor_desc} 通过 {tech_cn} 进行化学修饰，"
-        )
-        lines.append(
-            "利用靶细胞表面特异性识别该修饰的受体，"
-            "实现 精准靶向递送至目标细胞，"
-            "从而在细胞内中和 miRNA 的活性，减轻相关病理反应。"
-        )
-
-        return "\n".join(lines)
+        parts.append(f'<div>{text}</div>')
+        return "".join(parts)
 
     # --- Codon_Escape（密码子伪装策略） ---
     if "wild_codon" in details and "mutant_codon" in details:
@@ -134,28 +129,23 @@ def format_strategy_details(details, mirna_id=""):
         mt = details["mutant_codon"]
         aa = details.get("amino_acid", "")
 
-        lines = ["📌 密码子伪装策略（Codon Escape）"]
-        lines.append("")
-        lines.append(
-            f"在 mRNA 编码区中，将原始的 危险密码子 {wt}"
-            f"（编码 {aa}）"
-        )
-        lines.append(
-            f"通过同义突变改为 {mt}（仍编码 {aa}），"
-        )
-        lines.append(
-            "在不改变蛋白质氨基酸序列的前提下，"
-            "破坏 miRNA 种子区与 mRNA 的结合位点，"
-            "使该 mRNA 能够逃逸 miRNA 介导的翻译抑制。"
-        )
+        parts.append('<div style="margin-bottom: 4px;"><strong>📌 密码子伪装策略（Codon Escape）</strong></div>')
 
-        return "\n".join(lines)
+        text = (
+            f"在 mRNA 编码区中，将原始的 危险密码子 {wt}（编码 {aa}）"
+            f" 通过 <strong>同义突变</strong> 改为 {mt}（仍编码 {aa}），"
+            f"在不改变蛋白质氨基酸序列的前提下，"
+            f"破坏 miRNA 种子区与 mRNA 的结合位点，"
+            f"使该 mRNA 能够逃逸 miRNA 介导的翻译抑制。"
+        )
+        parts.append(f'<div>{text}</div>')
+        return "".join(parts)
 
-    # --- 兜底：格式化 JSON key-value ---
-    lines = ["📌 策略详情"]
+    # --- 兜底 ---
+    parts.append('<div><strong>📌 策略详情</strong></div>')
     for k, v in details.items():
-        lines.append(f"  • {k}: {v}")
-    return "\n".join(lines)
+        parts.append(f'<div>• {k}: {v}</div>')
+    return "".join(parts)
 
 
 app.jinja_env.filters["fmt_strategy"] = format_strategy_details
