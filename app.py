@@ -128,22 +128,25 @@ def format_strategy_details(details, mirna_id=""):
 
         return "\n".join(lines)
 
-    # --- Codon_Escape（密码子逃逸策略） ---
+    # --- Codon_Escape（密码子伪装策略） ---
     if "wild_codon" in details and "mutant_codon" in details:
         wt = details["wild_codon"]
         mt = details["mutant_codon"]
         aa = details.get("amino_acid", "")
 
-        lines = ["📌 密码子逃逸策略（Codon Escape）"]
+        lines = ["📌 密码子伪装策略（Codon Escape）"]
         lines.append("")
         lines.append(
-            f"将野生型密码子 {wt}（编码 {aa}）"
-            f" 突变为 {mt}，"
+            f"在 mRNA 编码区中，将原始的 危险密码子 {wt}"
+            f"（编码 {aa}）"
         )
         lines.append(
-            "在不改变氨基酸序列的前提下，"
-            "破坏 miRNA 与 mRNA 的互补结合位点，"
-            "从而规避 miRNA 对该 mRNA 的抑制作用。"
+            f"通过同义突变改为 {mt}（仍编码 {aa}），"
+        )
+        lines.append(
+            "在不改变蛋白质氨基酸序列的前提下，"
+            "破坏 miRNA 种子区与 mRNA 的结合位点，"
+            "使该 mRNA 能够逃逸 miRNA 介导的翻译抑制。"
         )
 
         return "\n".join(lines)
