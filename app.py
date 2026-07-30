@@ -180,17 +180,19 @@ def index():
 @app.route("/search")
 @login_required
 def search():
-    """Search results page with pagination."""
+    """Search results page with pagination.
+    空关键词 = 浏览全部，不报错。
+    """
     keyword = request.args.get("q", "").strip()
     mode = request.args.get("mode", "contains")
     page = request.args.get("page", 1, type=int)
     per_page = 20
 
     if not keyword:
-        flash("请输入搜索关键词。", "warning")
-        return redirect(url_for("index"))
-
-    results = search_mirna(keyword, mode)
+        # 空关键词 = 浏览全部，查所有记录
+        results = search_mirna("", mode)
+    else:
+        results = search_mirna(keyword, mode)
     total = len(results)
 
     # Paginate
