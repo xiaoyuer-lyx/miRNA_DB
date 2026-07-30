@@ -103,15 +103,15 @@ def get_mirna_detail(mirna_id):
         (mirna_id,),
     )
     functional = query_dict(
-        "SELECT *, COALESCE(mirbase_id, mirna_id) AS display_id FROM mirna_functional_bias WHERE mirna_id = %s ORDER BY bias_category",
+        "SELECT * FROM mirna_functional_bias WHERE mirna_id = %s ORDER BY bias_category",
         (mirna_id,),
     )
     engineering = query_dict(
-        "SELECT *, COALESCE(mirbase_id, mirna_id) AS display_id FROM mirna_engineering_optimization WHERE mirna_id = %s ORDER BY opt_type",
+        "SELECT * FROM mirna_engineering_optimization WHERE mirna_id = %s ORDER BY opt_type",
         (mirna_id,),
     )
     interactions = query_dict(
-        "SELECT *, COALESCE(mirbase_id, mirna_id) AS display_id FROM mirna_target_interactions WHERE mirna_id = %s ORDER BY target_gene",
+        "SELECT * FROM mirna_target_interactions WHERE mirna_id = %s ORDER BY target_gene",
         (mirna_id,),
     )
     return {
