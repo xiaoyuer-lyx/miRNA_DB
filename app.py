@@ -182,17 +182,18 @@ def index():
 def search():
     """Search results page with pagination.
     空关键词 = 浏览全部，不报错。
+    支持 species 参数限定物种。
     """
     keyword = request.args.get("q", "").strip()
     mode = request.args.get("mode", "contains")
+    species = request.args.get("species", "all")
     page = request.args.get("page", 1, type=int)
     per_page = 20
 
     if not keyword:
-        # 空关键词 = 浏览全部，查所有记录
-        results = search_mirna("", mode)
+        results = search_mirna("", mode, species)
     else:
-        results = search_mirna(keyword, mode)
+        results = search_mirna(keyword, mode, species)
     total = len(results)
 
     # Paginate
@@ -206,6 +207,7 @@ def search():
         results=page_results,
         keyword=keyword,
         mode=mode,
+        species=species,
         page=page,
         total_pages=total_pages,
         total=total,

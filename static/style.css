@@ -333,6 +333,18 @@ a:hover {
     border-right: 1px solid var(--border-color);
 }
 
+.search-species-select {
+    padding: 10px 14px;
+    border: none;
+    background: #f8f9fa;
+    color: var(--text-label);
+    font-size: 0.85em;
+    cursor: pointer;
+    outline: none;
+    border-right: 1px solid var(--border-color);
+    min-width: 110px;
+}
+
 .search-input {
     flex: 1;
     padding: 12px 16px;

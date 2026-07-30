@@ -12,11 +12,17 @@
 
     <form action="{{ url_for('search') }}" method="GET" class="search-form">
         <div class="search-box">
+            <select name="species" class="search-species-select" title="选择物种">
+                <option value="all">🌐 所有物种</option>
+                <option value="Homo sapiens">🧑 Homo sapiens</option>
+                <option value="Mus musculus">🐭 Mus musculus</option>
+                <option value="Drosophila melanogaster">🪰 Drosophila melanogaster</option>
+            </select>
             <select name="mode" class="search-mode-select">
                 <option value="contains">包含匹配</option>
                 <option value="exact">精确匹配</option>
             </select>
-            <input type="text" name="q" class="search-input" placeholder="输入 miRNA ID，例如 hsa-miR-21-5p" required>
+            <input type="text" name="q" class="search-input" placeholder="输入 miRNA ID，例如 hsa-miR-21-5p">
             <button type="submit" class="search-btn">
                 <i class="bi bi-search"></i> 搜索
             </button>
@@ -28,7 +34,7 @@
         {% set common_species = ['Homo sapiens', 'Mus musculus', 'Drosophila melanogaster'] %}
         {% for sp in common_species %}
         {% set short_name = sp.split()[0] %}
-        <a href="{{ url_for('search') }}?q={{ short_name }}&mode=contains" class="species-btn" title="{{ sp }}">
+        <a href="{{ url_for('search') }}?species={{ sp | urlencode }}&mode=contains&q=" class="species-btn" title="{{ sp }}">
             {% if 'Homo' in sp or 'human' in sp.lower() %}
             <i class="bi bi-person"></i>
             {% elif 'Mus' in sp or 'mouse' in sp.lower() %}
@@ -36,7 +42,7 @@
             {% else %}
             <i class="bi bi-bug"></i>
             {% endif %}
-            {{ sp.split('_')[0] if '_' in sp else sp.split()[0] }}
+            {{ short_name }}
         </a>
         {% endfor %}
     </div>

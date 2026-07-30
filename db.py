@@ -45,19 +45,29 @@ def execute(sql, params=None):
 # ── miRNA queries ──────────────────────────────────────────────────────────
 
 
-def search_mirna(keyword, mode="contains"):
+def search_mirna(keyword, mode="contains", species=None):
     """
     Search mirna_core_info by mirna_id (exact) or mirna_id/species (contains).
+    If species is provided, filter by that species.
     mode: 'exact' or 'contains'
     """
     if mode == "exact":
-        sql = "SELECT * FROM mirna_core_info WHERE mirna_id = %s ORDER BY mirna_id"
-        return query_dict(sql, (keyword,))
+        sql = "SELECT * FROM mirna_core_info WHERE mirna_id = %s"
+        params = [keyword]
+        if species and species != "all":
+            sql += " AND species = %s"
+            params.append(species)
+        sql += " ORDER BY mirna_id"
+        return query_dict(sql, params)
     else:
-        # 包含匹配：同时搜索 mirna_id 和 species
-        sql = "SELECT * FROM mirna_core_info WHERE mirna_id ILIKE %s OR species ILIKE %s ORDER BY mirna_id"
+        sql = "SELECT * FROM mirna_core_info WHERE (mirna_id ILIKE %s OR species ILIKE %s)"
         like = f"%{keyword}%"
-        return query_dict(sql, (like, like))
+        params = [like, like]
+        if species and species != "all":
+            sql += " AND species = %s"
+            params.append(species)
+        sql += " ORDER BY mirna_id"
+        return query_dict(sql, params)
 
 
 def count_mirna_total():
