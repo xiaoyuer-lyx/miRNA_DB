@@ -255,10 +255,10 @@
                 </div>
                 <p><strong>应用场景：</strong>{{ opt['application_scenario'] or '-' }}</p>
                 <p><strong>策略详情：</strong></p>
-                <div style="background: #f8f9fa; border-radius: 4px; padding: 14px; font-size: 0.85em; line-height: 1.6;">
+                <div style="background: #f8f9fa; border-radius: 4px; padding: 14px; line-height: 1.7; white-space: pre-wrap;">
                     {{ opt['strategy_details'] | fmt_strategy(opt['mirna_id']) }}
                 </div>
-                <p class="mb-0"><strong>数据来源：</strong><span class="data-source-tag">{{ opt['data_source'] }}</span></p>
+                <p class="mb-0 mt-3"><strong>数据来源：</strong><span class="data-source-tag">{{ opt['data_source'] }}</span></p>
             </div>
         </div>
         {% endfor %}
